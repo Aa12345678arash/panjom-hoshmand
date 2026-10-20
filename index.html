@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<title>پنجم هوشمند | نمونه اولیه</title>
+<style>
+:root{--blue:#2563eb;--ink:#172033;--muted:#667085;--bg:#f4f7fb;--card:#fff;--line:#e6eaf1;--green:#15803d;--orange:#ea580c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Tahoma,"Noto Sans Arabic",Arial,sans-serif;line-height:1.8}
+header{background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:white;padding:22px 18px 28px;border-radius:0 0 26px 26px}
+.wrap{max-width:780px;margin:auto;padding:0 14px}header .tag{font-size:12px;background:#ffffff26;border:1px solid #ffffff55;padding:4px 10px;border-radius:20px;display:inline-block}
+h1{font-size:26px;margin:8px 0 2px}header p{margin:0;color:#e8edff;font-size:14px}
+main{padding:16px 0 40px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:-8px}
+.stat,.panel,.subject,.lesson-card{background:var(--card);border:1px solid var(--line);border-radius:17px;box-shadow:0 5px 18px #17203308}
+.stat{padding:12px;text-align:center}.stat b{display:block;font-size:21px;color:var(--blue)}.stat span{font-size:11px;color:var(--muted)}
+h2{font-size:19px;margin:22px 2px 10px}.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.subject{padding:15px;text-align:right;cursor:pointer;border:2px solid transparent;transition:.15s}.subject:active{transform:scale(.98)}.subject.selected{border-color:var(--blue);background:#eff6ff}
+.emoji{font-size:28px}.subject h3{margin:3px 0;font-size:16px}.subject p{margin:0;color:var(--muted);font-size:12px}
+.panel{padding:16px;margin-top:13px}.panel h3{margin:0 0 7px;font-size:18px}.pill{display:inline-block;background:#eff6ff;color:#1d4ed8;border-radius:20px;padding:2px 9px;font-size:11px;margin-bottom:7px}
+.lesson-card{padding:13px;margin-top:10px}.lesson-card h4{margin:0 0 5px}.lesson-card p{margin:5px 0;font-size:14px}.example{background:#f0fdf4;border-right:4px solid #22c55e;padding:10px 12px;border-radius:10px;margin-top:9px}
+button{font-family:inherit;border:0;border-radius:12px;padding:11px 14px;cursor:pointer;font-size:14px;font-weight:bold}.primary{background:var(--blue);color:#fff}.secondary{background:#eef2ff;color:#3730a3}.quiet{background:#f1f5f9;color:#334155}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.question{border-top:1px solid var(--line);padding:13px 0}.question:first-child{border-top:0}.question p{font-weight:bold;margin:0 0 8px}.option{display:block;width:100%;text-align:right;background:#f8fafc;border:1px solid var(--line);margin:6px 0;font-weight:normal}.option.correct{background:#dcfce7;border-color:#22c55e}.option.wrong{background:#fee2e2;border-color:#ef4444}.feedback{font-size:13px;color:var(--muted);min-height:22px}
+.hidden{display:none!important}.bar{height:8px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin-top:8px}.bar div{height:100%;width:0;background:#22c55e;transition:width .3s}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:18px 0 30px}
+@media(min-width:600px){.subjects{grid-template-columns:repeat(4,minmax(0,1fr))}.subject{padding:16px 12px}.stat span{font-size:12px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<span class="tag">نسخه آزمایشی ۰٫۱ · آموزش پایه پنجم</span>
+<h1>پنجمِ هوشمند 🎓</h1>
+<p>یاد بگیر، تمرین کن، پیشرفتت را ببین.</p>
+</div></header>
+<main class="wrap">
+<div class="stats">
+<div class="stat"><b id="doneCount">۰</b><span>آزمون تکمیل‌شده</span></div>
+<div class="stat"><b id="bestScore">۰٪</b><span>بهترین نتیجه</span></div>
+<div class="stat"><b>۴</b><span>درس آموزشی</span></div>
+</div>
+<h2>درس موردنظرت را انتخاب کن</h2>
+<div class="subjects" id="subjects"></div>
+<section class="panel" id="lessonPanel">
+<span class="pill">شروع یادگیری</span>
+<h3 id="lessonTitle">به پنجم هوشمند خوش آمدی!</h3>
+<p id="lessonIntro">یکی از درس‌ها را انتخاب کن تا آموزش نمونه و آزمون آن نمایش داده شود.</p>
+<div id="lessonContent"></div>
+<div class="actions"><button class="primary" id="startQuiz" disabled>شروع آزمون این درس</button><button class="quiet" id="resetProgress">پاک کردن پیشرفت این دستگاه</button></div>
+</section>
+<section class="panel hidden" id="quizPanel">
+<span class="pill">آزمون تمرینی</span><h3 id="quizTitle">آزمون</h3>
+<div id="questions"></div>
+<div class="actions"><button class="primary" id="submitQuiz">ثبت پاسخ‌ها و دیدن نتیجه</button><button class="secondary" id="backLesson">بازگشت به آموزش</button></div>
+<p class="feedback" id="quizFeedback" aria-live="polite"></p>
+<div class="bar"><div id="progressBar"></div></div>
+</section>
+<footer>نمونه اولیه آموزشی · محتوای این نسخه آزمایشی محدود است و هنوز نسخه نهایی فروشگاهی نیست.</footer>
+</main>
+<script>
+const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const subjects=[
+{id:'math',name:'ریاضی',icon:'🧮',desc:'عددها، کسرها و حل مسئله',intro:'در ریاضی، مسئله را مرحله‌به‌مرحله حل می‌کنیم و پاسخ را بررسی می‌کنیم.',lesson:'جمع کسرهای هم‌مخرج',body:'وقتی مخرج دو کسر برابر است، صورت‌ها را با هم جمع می‌کنیم و مخرج را همان‌طور نگه می‌داریم.',example:'۲/۷ + ۳/۷ = ۵/۷',tip:'اگر مخرج‌ها متفاوت باشند، ابتدا باید کسرها را هم‌مخرج کنیم.',questions:[{q:'حاصل ۲/۹ + ۴/۹ کدام است؟',opts:['۶/۹','۶/۱۸','۲/۹'],a:0,why:'مخرج ثابت می‌ماند و صورت‌ها جمع می‌شوند: ۲+۴=۶.'},{q:'حاصل ۱/۸ + ۳/۸ چیست؟',opts:['۴/۱۶','۴/۸','۳/۸'],a:1,why:'صورت‌ها جمع می‌شوند و مخرج ۸ باقی می‌ماند.'},{q:'در جمع کسرهای هم‌مخرج چه چیزی ثابت می‌ماند؟',opts:['صورت','مخرج','هر دو'],a:1,why:'مخرج ثابت است و صورت‌ها جمع می‌شوند.'}]},
+{id:'science',name:'علوم',icon:'🔬',desc:'کشف دنیای اطراف',intro:'علوم به ما کمک می‌کند پدیده‌های طبیعت را با مشاهده و آزمایش بشناسیم.',lesson:'چرخه آب',body:'گرمای خورشید باعث تبخیر آب می‌شود. بخار آب سرد می‌شود و ابر تشکیل می‌دهد؛ سپس آب به شکل باران یا برف به زمین برمی‌گردد.',example:'تبخیر ← تشکیل ابر ← بارش ← جمع‌شدن آب',tip:'آب در طبیعت پیوسته در حال گردش است.',questions:[{q:'کدام عامل به تبخیر آب کمک می‌کند؟',opts:['گرمای خورشید','تاریکی','یخ‌زدن'],a:0,why:'گرمای خورشید آب را به بخار تبدیل می‌کند.'},{q:'ابرها چگونه تشکیل می‌شوند؟',opts:['با سرد شدن بخار آب','با سوختن آب','با خشک شدن خاک'],a:0,why:'بخار آب سرد می‌شود و قطره‌های ریز تشکیل می‌دهد.'},{q:'باران بخشی از کدام فرایند است؟',opts:['چرخه آب','چرخه سنگ فقط','حرکت زمین'],a:0,why:'بارش یکی از مراحل چرخه آب است.'}]},
+{id:'persian',name:'فارسی',icon:'📚',desc:'واژه، درک مطلب و نگارش',intro:'در فارسی با خواندن دقیق، معنی واژه‌ها و نوشتن جمله‌های روشن بهتر می‌شویم.',lesson:'درک مطلب',body:'برای پاسخ به پرسش‌های یک متن، ابتدا متن را با دقت بخوان. سپس کلمه‌های کلیدی پرسش را پیدا کن و پاسخ را از خود متن یا مفهوم آن به دست آور.',example:'متن: «باران بارید و باغ تازه شد.» پرسش: چه چیزی باغ را تازه کرد؟ پاسخ: باران.',tip:'پاسخ خوب باید روشن، مرتبط و کامل باشد.',questions:[{q:'برای پاسخ دقیق به پرسش متن، ابتدا چه کنیم؟',opts:['متن را با دقت بخوانیم','فقط عنوان را نگاه کنیم','حدس بزنیم'],a:0,why:'خواندن دقیق کمک می‌کند شواهد پاسخ را پیدا کنیم.'},{q:'کدام جمله روشن‌تر است؟',opts:['او آن را انجام داد.','سارا کتاب را به کتابخانه برد.','این همان بود.'],a:1,why:'جمله دوم شخص و کار را مشخص می‌کند.'},{q:'واژه هم‌معنی «شاد» کدام است؟',opts:['خوشحال','غمگین','خسته'],a:0,why:'شاد و خوشحال معنای نزدیک دارند.'}]},
+{id:'social',name:'مطالعات اجتماعی',icon:'🌍',desc:'جامعه، جغرافیا و تاریخ',intro:'مطالعات اجتماعی درباره زندگی گروهی، محیط زندگی، تاریخ و مسئولیت‌های ماست.',lesson:'همکاری در جامعه',body:'افراد یک جامعه نیازهای مشترکی دارند. همکاری، رعایت قانون و احترام به حقوق دیگران باعث می‌شود کارها بهتر انجام شود.',example:'در مدرسه، دانش‌آموزان با تقسیم وظایف می‌توانند کلاس را مرتب نگه دارند.',tip:'مسئولیت‌پذیری یعنی وظیفه خود را بشناسیم و آن را انجام دهیم.',questions:[{q:'کدام رفتار به همکاری در کلاس کمک می‌کند؟',opts:['تقسیم وظایف','نادیده گرفتن دیگران','به‌هم‌زدن نظم'],a:0,why:'تقسیم وظایف باعث می‌شود همه در انجام کار سهم داشته باشند.'},{q:'چرا قوانین مشترک لازم‌اند؟',opts:['برای نظم و حفظ حقوق افراد','برای سخت‌تر شدن همه کارها','برای حذف همکاری'],a:0,why:'قانون به نظم و رعایت حقوق کمک می‌کند.'},{q:'مسئولیت‌پذیری یعنی چه؟',opts:['انجام وظیفه خود','واگذار کردن همه کارها','بی‌توجهی به قول'],a:0,why:'فرد مسئولیت‌پذیر وظیفه‌اش را انجام می‌دهد.'}]}
+];
+let selected=null, answered=false;
+let progress=JSON.parse(localStorage.getItem('ph_progress')||'{"done":0,"best":0,"subjects":{}}');
+const el=id=>document.getElementById(id);
+function renderStats(){el('doneCount').textContent=fa(progress.done);el('bestScore').textContent=fa(progress.best)+'٪'}
+function renderSubjects(){el('subjects').innerHTML='';subjects.forEach(s=>{let b=document.createElement('button');b.className='subject'+(selected?.id===s.id?' selected':'');b.innerHTML=`<div class="emoji">${s.icon}</div><h3>${s.name}</h3><p>${s.desc}</p>`;b.onclick=()=>choose(s.id);el('subjects').appendChild(b)})}
+function choose(id){selected=subjects.find(s=>s.id===id);renderSubjects();el('lessonTitle').textContent=selected.name+'؛ '+selected.lesson;el('lessonIntro').textContent=selected.intro;el('lessonContent').innerHTML=`<div class="lesson-card"><h4>آموزش کوتاه</h4><p>${selected.body}</p><div class="example"><b>مثال:</b> ${selected.example}</div><p><b>نکته:</b> ${selected.tip}</p></div>`;el('startQuiz').disabled=false;el('quizPanel').classList.add('hidden');el('lessonPanel').classList.remove('hidden')}
+function startQuiz(){if(!selected)return;answered=false;el('quizPanel').classList.remove('hidden');el('lessonPanel').classList.add('hidden');el('quizTitle').textContent='آزمون '+selected.name;el('quizFeedback').textContent='برای هر پرسش یک گزینه را انتخاب کن.';el('progressBar').style.width='0%';el('questions').innerHTML='';selected.questions.forEach((q,i)=>{let d=document.createElement('div');d.className='question';d.innerHTML=`<p>${fa(i+1)}. ${q.q}</p>`;q.opts.forEach((o,j)=>{let b=document.createElement('button');b.className='option';b.textContent='◯ '+o;b.dataset.q=i;b.dataset.a=j;b.onclick=()=>{if(answered)return;d.querySelectorAll('.option').forEach(x=>{x.style.outline='';x.dataset.chosen='false'});b.style.outline='2px solid #2563eb';b.dataset.chosen='true'};d.appendChild(b)});let f=document.createElement('div');f.className='feedback';f.id='why'+i;d.appendChild(f);el('questions').appendChild(d)})}
+function submitQuiz(){if(!selected||answered)return;let score=0,missing=0;selected.questions.forEach((q,i)=>{let d=el('questions').children[i],chosen=d.querySelector('[data-chosen="true"]');if(!chosen){missing++;return}let a=Number(chosen.dataset.a);d.querySelectorAll('.option').forEach(b=>{let n=Number(b.dataset.a);if(n===q.a)b.classList.add('correct');if(n===a&&n!==q.a)b.classList.add('wrong')});if(a===q.a)score++;el('why'+i).textContent=q.why});if(missing){el('quizFeedback').textContent=`هنوز به ${fa(missing)} پرسش پاسخ نداده‌ای؛ آن‌ها را هم انتخاب کن.`;return}answered=true;let pct=Math.round(score/selected.questions.length*100);progress.done++;progress.best=Math.max(progress.best,pct);progress.subjects[selected.id]=Math.max(progress.subjects[selected.id]||0,pct);localStorage.setItem('ph_progress',JSON.stringify(progress));renderStats();el('progressBar').style.width=pct+'%';el('quizFeedback').textContent=`نتیجه: ${fa(score)} از ${fa(selected.questions.length)} پاسخ درست؛ ${fa(pct)} درصد. ${pct===100?'آفرین، عالی بود!':pct>=60?'خوب است؛ نکته‌ها را دوباره مرور کن.':'یک بار دیگر آموزش را بخوان و دوباره تلاش کن.'}`}
+el('startQuiz').onclick=startQuiz;el('submitQuiz').onclick=submitQuiz;el('backLesson').onclick=()=>{el('quizPanel').classList.add('hidden');el('lessonPanel').classList.remove('hidden')};el('resetProgress').onclick=()=>{if(confirm('پیشرفت ذخیره‌شده روی این دستگاه پاک شود؟')){progress={done:0,best:0,subjects:{}};localStorage.setItem('ph_progress',JSON.stringify(progress));renderStats()}};
+renderSubjects();renderStats();
+</script>
+<script>if ("serviceWorker" in navigator) { window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(()=>{})); }</script>
+</body>
+</html>
